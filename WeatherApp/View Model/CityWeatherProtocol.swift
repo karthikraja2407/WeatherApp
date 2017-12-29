@@ -57,6 +57,7 @@ protocol CityWeatherProtocol {
    - returns: temperature in celcius
    */
   
-  func convertToCelcius(_ kelvinTemp:Double?) -> String? 
+  func convertToCelcius(_ kelvinTemp:Double?) -> String?
   
 }
+

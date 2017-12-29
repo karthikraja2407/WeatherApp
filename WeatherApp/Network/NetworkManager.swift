@@ -31,7 +31,7 @@ class NetworkManager: NSObject {
   class func get(_ strURL: String, parameters: [String: AnyObject], success:@escaping apiSuccess, failure:@escaping apiFailure) {
     Alamofire.request(strURL, parameters: parameters).responseJSON { (responseObject) -> Void in
       //print("\nmakeGetCall:\n\(responseObject)")
-
+      
       if responseObject.result.isSuccess {
         let JSON = responseObject.result.value as? NSDictionary
         if (JSON != nil) {
@@ -53,7 +53,7 @@ class NetworkManager: NSObject {
   class func post(_ strURL: String, parameters: [String: AnyObject], success:@escaping apiSuccess, failure:@escaping apiFailure) {
     Alamofire.request(strURL, method: .post, parameters: parameters).responseJSON { (responseObject) -> Void in
       //print("\nmakePostCall:\n\(responseObject)")
-
+      
       if responseObject.result.isSuccess {
         let JSON = responseObject.result.value as? NSDictionary
         if (JSON != nil) {

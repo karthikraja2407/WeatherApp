@@ -19,14 +19,14 @@ class CityWeatherViewController: UIViewController ,UISearchBarDelegate{
   @IBOutlet weak var temparatureLabel: UILabel!
   @IBOutlet weak var coordinateLabel: UILabel!
   
-   // MARK: - View Controller life cycle.
+  // MARK: - View Controller life cycle.
   
   override func viewDidLoad() {
     super.viewDidLoad()
     self.title = "Weather App"
     self.getLastSearchedWeather()
   }
-
+  
   override func didReceiveMemoryWarning() {
     super.didReceiveMemoryWarning()
   }
@@ -99,7 +99,7 @@ class CityWeatherViewController: UIViewController ,UISearchBarDelegate{
     self.viewModel.getCityWeather(name: text, success: { (icon, description, name, geoCoordinate, temperature) in
       self.updateView(icon: icon, description: description, name: name, geoCoordinate: geoCoordinate, temperature: temperature)
     }, failure: { (error) in
-        self.showError(error: error)
+      self.showError(error: error)
     })
   }
   

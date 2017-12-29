@@ -15,6 +15,7 @@ struct Coordinate {
   
   init(json:JSON) {
     self.latitude = json["lat"].double
-    self.longitude = json["lon"].double    
+    self.longitude = json["lon"].double
   }
 }
+

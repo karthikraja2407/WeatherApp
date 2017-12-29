@@ -23,5 +23,6 @@ struct Main {
     self.humidity = json["humidity"].double
     self.temp_min = json["temp_min"].double
     self.temp_max = json["temp_max"].double
-  }    
+  }
 }
+

@@ -22,7 +22,7 @@ struct CityWeatherViewModel:CityWeatherProtocol {
    */
   
   func getCityWeather(name : String,success:@escaping apiSuccess,failure:@escaping apiFailure) {
-    let requestParams = ["q":name,"APPID":API.APP_ID] as [String : AnyObject]    
+    let requestParams = ["q":name,"APPID":API.APP_ID] as [String : AnyObject]
     NetworkManager.get(API.WEATHER_URL, parameters: requestParams as [String : AnyObject], success: {(result: NSDictionary) -> Void in
       let weatherDetails = self.parseData(result: result)
       
