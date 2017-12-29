@@ -9,10 +9,7 @@
 import Foundation
 import SwiftyJSON
 
-struct CityWeatherViewModel {
-  
-  typealias apiSuccess = (_ icon: String?,_ description:String?,_ name:String?,_ geoCoordinate:String?,_ temperature:String?) -> Void
-  typealias apiFailure = (_ error: String?) -> Void
+struct CityWeatherViewModel:CityWeatherProtocol {
   
   // MARK: - functional methods
   
@@ -29,28 +26,28 @@ struct CityWeatherViewModel {
     NetworkManager.get(API.WEATHER_URL, parameters: requestParams as [String : AnyObject], success: {(result: NSDictionary) -> Void in
       let weatherDetails = self.parseData(result: result)
       
-      if let cod = weatherDetails?.cod,cod == 200{
+      if let cod = weatherDetails.cod,cod == 200{
         //update last searched text only for success
         self.updateLastSearchedText(text: name)
-        let iconURL = weatherDetails?.weather?.icon?.getIconURL()
-        let description = weatherDetails?.weather?.description
-        let name = weatherDetails?.name
+        let iconURL = weatherDetails.weather?.icon?.getIconURL()
+        let description = weatherDetails.weather?.description
+        let name = weatherDetails.name
         var coordinates:String?
         //assuming both latitude and longitude will exist together ,else need to change this logic
-        if let latitude = weatherDetails?.coord?.latitude, let longitude = weatherDetails?.coord?.longitude{
+        if let latitude = weatherDetails.coord?.latitude, let longitude = weatherDetails.coord?.longitude{
           coordinates =  "coordinates : [\(latitude), \(longitude)]"
         }
         var temperature : String?
-        let temp = self.convertToCelcius(weatherDetails?.main?.temp)
-        let minTemp = self.convertToCelcius(weatherDetails?.main?.temp_min)
-        let maxTemp = self.convertToCelcius(weatherDetails?.main?.temp_max)
+        let temp = self.convertToCelcius(weatherDetails.main?.temp)
+        let minTemp = self.convertToCelcius(weatherDetails.main?.temp_min)
+        let maxTemp = self.convertToCelcius(weatherDetails.main?.temp_max)
         //assuming  temp,minTemp and maxTemp will exist together ,else need to change this logic
         if let temp = temp, let minTemp = minTemp , let maxTemp = maxTemp{
-          temperature = temp + "C, from " + minTemp + "C, to " + maxTemp + "C"
+          temperature = "Temperature " + temp + "C, from " + minTemp + "C to " + maxTemp + "C"
         }
         success( iconURL  ,description , name, coordinates,temperature )
       }else{
-        failure(weatherDetails?.message)
+        failure(weatherDetails.message)
       }
     }, failure: {(error: NSDictionary?) -> Void in
       if let error = error?["error"] as? NSError {
@@ -91,7 +88,7 @@ struct CityWeatherViewModel {
    - parameter result: API response data as NSDictionary
    - returns: optional WeatherDetails object
    */
-  func parseData(result:NSDictionary) -> WeatherDetails?{
+  func parseData(result:NSDictionary) -> WeatherDetails{
     let jsonData = JSON(result)
     let weatherDetails = WeatherDetails(json: jsonData)
     return weatherDetails
@@ -113,7 +110,7 @@ struct CityWeatherViewModel {
       return nil
     }
     let celsiusTemp = kelvinTemp - 273.15
-    return String(format: "%.0f", celsiusTemp)
+    return String(format: "%.1f", celsiusTemp)
   }
   
 }

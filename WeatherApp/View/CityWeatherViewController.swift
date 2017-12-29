@@ -78,7 +78,7 @@ class CityWeatherViewController: UIViewController ,UISearchBarDelegate{
     
     //previus weather value can be cleared here depending on requirement.
     print("error : \(String(describing: error))")
-    let alertController = UIAlertController(title: "Simple", message: error ?? "Unknown error", preferredStyle: UIAlertControllerStyle.alert)
+    let alertController = UIAlertController(title: "Error", message: error ?? "Unknown error", preferredStyle: UIAlertControllerStyle.alert)
     let cancelAction = UIAlertAction(title: "Ok", style: UIAlertActionStyle.cancel) { (result : UIAlertAction) -> Void in
       
     }

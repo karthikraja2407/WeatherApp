@@ -8,6 +8,7 @@
 
 import XCTest
 @testable import WeatherApp
+import SwiftyJSON
 
 class WeatherAppTests: XCTestCase {
     
@@ -21,16 +22,62 @@ class WeatherAppTests: XCTestCase {
         super.tearDown()
     }
     
-    func testExample() {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
+    func testAPISuccess() {
+      
+       let viewModel = CityWeatherViewModel()
+      let expect = expectation(description: "Wait for weather API call")
+      viewModel.getCityWeather(name: "London", success: { (icon, description, name, geoCoordinate, temperature) in
+        expect.fulfill()
+      }) { (error) in
+        XCTFail("weather api test failed")
+        expect.fulfill()
+      }
+      wait(for: [expect], timeout: 60)
     }
+  
+  func testAPIFailure() {
+    let viewModel = CityWeatherViewModel()
+    let expect = expectation(description: "Wait for weather API call")
+    viewModel.getCityWeather(name: "London123", success: { (icon, description, name, geoCoordinate, temperature) in
+      XCTFail("weather api should fail")
+      expect.fulfill()
+    }) { (error) in      
+      expect.fulfill()
+    }
+    wait(for: [expect], timeout: 60)
+  }
+  
+  func testConvertToCelcius() {
+    let value = CityWeatherViewModel().convertToCelcius(100)
+    XCTAssertNotNil(value, "celcius value is nil")
+    if let value = value {
+    XCTAssertEqual(value, "-173.1")
+    }
+  }
     
-    func testPerformanceExample() {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
-        }
-    }
+  func testLastSearchTest() {    
+    let searchText = "London"
+    let viewModel = CityWeatherViewModel()
+    viewModel.updateLastSearchedText(text: searchText)
+    XCTAssertEqual(viewModel.getLastSearchedText(), searchText)
+  }
+  
+  func testWeatherIconURL() {
+    let iconName = "10d"
+    let expectedURL = API.WEATHER_ICON_URL + iconName + ".png"
+    XCTAssertEqual(iconName.getIconURL(), expectedURL)
+  }
+  
+  func testWeatherAPIParser() {
+    let bundle = Bundle(for: type(of: self))
+    let fileURL = bundle.url(forResource: "WeatherResponse", withExtension: "json")
+    let data = try! Data(contentsOf: fileURL!, options: .mappedIfSafe)
+    let json = JSON(data)
+    let weatherDetails = WeatherDetails(json: json)
+    //Need to validate for each data .
+    XCTAssertEqual(weatherDetails.weather?.description, json["weather"][0]["description"].string)
+    XCTAssertEqual(weatherDetails.weather?.icon, json["weather"][0]["icon"].string)
+    
+  }
     
 }
